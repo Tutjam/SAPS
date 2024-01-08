@@ -4,7 +4,7 @@ import models.{Message, PhishingDetectorResponse}
 import org.nibor.autolink.{LinkExtractor, LinkSpan, LinkType}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
-import utils.Logger
+import utils.{Logger, UrlCache}
 
 import java.util
 import javax.inject.Inject
@@ -34,7 +34,12 @@ class MessageFilterService @Inject()(
       link <- extractLinks(msg)
     } yield {
       val url = text.substring(link.getBeginIndex, link.getEndIndex)
-      externalServiceRequest(url)
+      UrlCache.list.find(_ == url) match {
+        case Some(url) =>
+          Future.successful(None)
+        case None =>
+          externalServiceRequest(url)
+      }
     }
 
     Future.sequence(results).map { urls =>
@@ -65,6 +70,7 @@ class MessageFilterService @Inject()(
         if (response.isSafe) {
           Some(url)
         } else {
+          UrlCache.list += url
           None
         }
 
