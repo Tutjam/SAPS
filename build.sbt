@@ -8,4 +8,6 @@ resolvers += "Akka Snapshot Repository" at "https://repo.akka.io/snapshots/"
 
 scalaVersion := "2.13.12"
 
-libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice)
+libraryDependencies ++= Seq(jdbc, ehcache, ws, specs2 % Test, guice,
+  // URL DETECTOR  //
+  "org.nibor.autolink" % "autolink" % "0.11.0")
