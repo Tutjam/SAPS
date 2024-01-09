@@ -1,6 +1,6 @@
 package models
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{Json, OWrites, Reads}
 
 /**
  * Reprezentuje wiadomość SMS
@@ -14,3 +14,8 @@ case class Message(
                     recipient: Long,
                     message: String
                   )
+
+object Message {
+  implicit val reads: Reads[Message] = Json.reads[Message]
+  implicit val writes: OWrites[Message] = Json.writes[Message]
+}
