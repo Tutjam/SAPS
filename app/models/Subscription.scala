@@ -20,6 +20,9 @@ class Subscription(userId: Long,
   //getter
   def getIsActive: Boolean =
     this.isActive
+
+  override def toString: String =
+    s"Subscription(userId=${userId}, isActive=${isActive})"
 }
 
 object Subscription {
