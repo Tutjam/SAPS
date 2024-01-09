@@ -4,12 +4,13 @@ import models.{Message, PhishingDetectorResponse}
 import org.nibor.autolink.{LinkExtractor, LinkSpan, LinkType}
 import play.api.libs.json.Json
 import play.api.libs.ws.WSClient
-import utils.{Logger, UrlCache}
+import utils.{FutureUtils, Logger, UrlCache}
 
 import java.util
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.jdk.CollectionConverters
+import scala.util.Try
 
 
 /**
@@ -91,18 +92,25 @@ class MessageFilterService @Inject()(
    * @return odpowiedź
    */
   private def executeRequest(url: String): Future[Option[PhishingDetectorResponse]] = {
-    val uri = Json.toJson("uri" -> url)
-    val host = "web-risk-api-host.com"
-    val contentTypeHeader = ("Content-Type", "application/json")
-    val authHeader = ("Authorization", "Bearer test-1234567890")
-    val hostHeader = ("Host", host)
+    val result = Try {
+      val uri = Json.toJson("uri" -> url)
+      val host = "web-risk-api-host.com"
+      val contentTypeHeader = ("Content-Type", "application/json")
+      val authHeader = ("Authorization", "Bearer test-1234567890")
+      val hostHeader = ("Host", host)
 
-    ws
-      .url(s"$host/v1/$url")
-      .withHttpHeaders(contentTypeHeader, authHeader, hostHeader)
-      .post(uri).map { response =>
-      // w przypadku poprawnej odpowiedzi zewnętrznego serwisu sprawdzam, czy url jest bezpieczny i zwracam tą wiadomość
-      Json.fromJson[PhishingDetectorResponse](response.json).asOpt
-    }
+      ws
+        .url(s"$host/v1/$url")
+        .withHttpHeaders(contentTypeHeader, authHeader, hostHeader)
+        .post(uri).map { response =>
+        // w przypadku poprawnej odpowiedzi zewnętrznego serwisu sprawdzam, czy url jest bezpieczny i zwracam tą wiadomość
+        Json.fromJson[PhishingDetectorResponse](response.json).asOpt
+      }
+    }.recover { e =>
+      logger.error(e.getMessage, e)
+      Future.successful(None)
+    }.toOption
+
+    FutureUtils.flattenOption(result)
   }
 }
