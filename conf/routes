@@ -3,7 +3,7 @@
 # ~~~~
 
 +nocsrf
-POST        /messages/check        controllers.SMSController.check
+POST        /messages              controllers.SMSController.check
 
 +nocsrf
 POST        /subscriptions         controllers.SubscriptionController.update
