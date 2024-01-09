@@ -14,8 +14,10 @@ class Subscription(userId: Long,
   def getUserId: Long = userId
 
   //setter
-  def setActivity(isActive: Boolean): Unit =
+  def setActivity(isActive: Boolean): Subscription = {
     this.isActive = isActive
+    this
+  }
 
   //getter
   def getIsActive: Boolean =

@@ -1,6 +1,7 @@
 import com.google.inject.AbstractModule
-import java.time.Clock
+import dao.{SubscriptionDAO, SubscriptionDAOImpl}
 
+import java.time.Clock
 import services.{ApplicationTimer, AtomicCounter, Counter}
 
 /**
@@ -23,6 +24,8 @@ class Module extends AbstractModule {
     bind(classOf[ApplicationTimer]).asEagerSingleton()
     // Set AtomicCounter as the implementation for Counter.
     bind(classOf[Counter]).to(classOf[AtomicCounter])
+
+    bind(classOf[SubscriptionDAO]).to(classOf[SubscriptionDAOImpl])
   }
 
 }

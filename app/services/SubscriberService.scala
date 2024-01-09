@@ -7,11 +7,12 @@ import utils.Logger
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-
 /**
  * Serwis filtrujący wiadomości
  */
-class SubscriberService @Inject()()
+class SubscriberService @Inject()(
+                                 subscriptionDAO: SubscriptionDAO
+                                 )
                                  (
                                    implicit val executionContext: ExecutionContext
                                  ) extends Logger {
@@ -23,7 +24,7 @@ class SubscriberService @Inject()()
    * @return zwraca subskrybenta, jeżeli zaktualizowano stan jego subskrypcji
    */
   def update(message: Message): Future[Either[String, Subscription]] = Future {
-    val subscription = SubscriptionDAO.list.find(_.getUserId == message.recipient)
+    val subscription = subscriptionDAO.find(message.recipient)
     (message.message match {
       case "START" =>
         setActivity(isActive = true, subscription, message)
@@ -48,8 +49,8 @@ class SubscriberService @Inject()()
   def setActivity(isActive: Boolean, subscription: Option[Subscription], message: Message) = {
     subscription match {
       case Some(r) =>
-        r.setActivity(isActive)
-        Right(r)
+        subscriptionDAO.update(r.setActivity(isActive)).toRight("")
+
       case None =>
         Left(s"Recipient with id '${message.recipient}' not found in database.")
     }

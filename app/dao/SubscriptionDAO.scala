@@ -1,20 +1,22 @@
 package dao
 
 import models.Subscription
-import utils.Logger
 
-import scala.collection.mutable.ListBuffer
-
-object SubscriptionDAO extends Logger {
+trait SubscriptionDAO {
 
   /**
-   * 'Baza danych' Subskrybentów
+   * Wyszukuje subskrypcji użytkownika
+   *
+   * @param userId identyfikator użytkownika
+   * @return subskrypcja lub None
    */
-  val list: ListBuffer[Subscription] = ListBuffer[Subscription]()
+  def find(userId: Long): Option[Subscription]
 
-  (0L until 10L).toList.map { subId =>
-    val subscription = new Subscription(subId, math.random() < 0.5)
-    logger.info(s"Subscription added to database : ${subscription}")
-    list.addOne(subscription)
-  }
+  /**
+   * Aktualizuje subskrypcję
+   *
+   * @param subscription subskrypcja do aktualizacji
+   * @return subskrypcja jeżeli udało się zaktualizować
+   */
+  def update(subscription: Subscription): Option[Subscription]
 }
