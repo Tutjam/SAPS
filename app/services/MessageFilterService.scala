@@ -71,7 +71,7 @@ class MessageFilterService @Inject()(
         if (response.isSafe) {
           Some(url)
         } else {
-          UrlCache.list += url
+          UrlCache.list.addOne(url)
           None
         }
 
