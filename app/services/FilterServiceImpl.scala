@@ -14,12 +14,12 @@ import scala.jdk.CollectionConverters
 /**
  * Serwis filtrujący wiadomości
  */
-class MessageFilterServiceImpl @Inject()(
+class FilterServiceImpl @Inject()(
                                       ws: WSService
                                     )
-                                    (
+                                 (
                                       implicit val executionContext: ExecutionContext
-                                    ) extends MessageFilterService with Logger {
+                                    ) extends FilterService with Logger {
 
   /**
    * Odfiltrowuje niebezpieczne wiadomości

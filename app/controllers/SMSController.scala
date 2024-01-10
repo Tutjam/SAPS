@@ -3,14 +3,14 @@ package controllers
 import models.{Message, Subscription}
 import play.api.libs.json.Json
 import play.api.mvc._
-import services.{MessageFilterService, SubscriberService}
+import services.{FilterService, SubscriberService}
 import utils.JsParser
 
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
 class SMSController @Inject()(cc: ControllerComponents,
-                              messageFilterService: MessageFilterService,
+                              messageFilterService: FilterService,
                               subscriberService: SubscriberService
                              )(
                                implicit val executionContext: ExecutionContext

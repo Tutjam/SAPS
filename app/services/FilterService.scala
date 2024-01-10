@@ -9,7 +9,7 @@ import scala.concurrent.Future
 /**
  * Serwis filtrujący wiadomości
  */
-trait MessageFilterService {
+trait FilterService {
 
   /**
    * Odfiltrowuje niebezpieczne wiadomości
