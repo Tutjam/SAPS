@@ -17,7 +17,7 @@ Do odpytania zewnętrznego api został utworzony oddzielny serwis. W serwisie wy
 Zaimplementowane zostało kilka testów dla kontrolera oraz serwisów.
 
 Endpoint /messages
-Jako body przyjmuje JSON'a w formacie
+Jako body przyjmuje JSON'a w formacie :
 {
     "sender": "234100200300",
     "recipient": "48700800999",
@@ -25,11 +25,10 @@ Jako body przyjmuje JSON'a w formacie
 }
 W przypadku, jeżeli wiadomość jest phishingowa zwraca status 204 NoContent.
 Jeżeli wiadomość jest bezpieczna - zwraca status 200 oraz wiadomość w takim samym formacie, w jakim otrzymał.
-Jeżeli wiadomość jest o treści START lub STOP - zwraca status 200 oraz zaktualizowaną subskrypcję w formacie
+Jeżeli wiadomość jest o treści START lub STOP - zwraca status 200 oraz zaktualizowaną subskrypcję w formacie :
 {
-„userId": "234100200300",
-„isActive”: true,
-
+    "userId": "234100200300",
+    "isActive”: true
 }
 Aplikacja została zbudowana w oparciu o Play Framework.
 Java 11, Scala 2.13.12,
