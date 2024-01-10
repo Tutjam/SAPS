@@ -10,7 +10,7 @@ trait SubscriptionDAO {
    * @param userId identyfikator użytkownika
    * @return subskrypcja lub None
    */
-  def find(userId: Long): Option[Subscription]
+  def find(userId: String): Option[Subscription]
 
   /**
    * Aktualizuje subskrypcję

@@ -23,7 +23,7 @@ class FilterControllerSpec @Inject()() extends PlaySpec with GuiceOneAppPerSuite
 
   val mockMessageFilterService = mock[FilterService]
   val mockSubscriberService = mock[SubscriberService]
-  val message = Message(1, 2, "Some text")
+  val message = Message("1", "2", "Some text")
 
   val controller = new FilterController(Helpers.stubControllerComponents(), mockMessageFilterService, mockSubscriberService)
   val requestBody = Json.toJson(message)
@@ -49,7 +49,7 @@ class FilterControllerSpec @Inject()() extends PlaySpec with GuiceOneAppPerSuite
     }
 
     "activates subscription" in {
-      val exampleSubscription = new Subscription(1L, true)
+      val exampleSubscription = new Subscription("1", true)
       when(mockSubscriberService.update(message)).thenReturn(Future.successful(Right(exampleSubscription)))
 
       val result = contentAsJson(Helpers.call(controller.filter(), req))
@@ -59,7 +59,7 @@ class FilterControllerSpec @Inject()() extends PlaySpec with GuiceOneAppPerSuite
     }
 
     "stops subscription" in {
-      val exampleSubscription = new Subscription(1L, false)
+      val exampleSubscription = new Subscription("1", false)
       when(mockSubscriberService.update(message)).thenReturn(Future.successful(Right(exampleSubscription)))
 
       val result = contentAsJson(Helpers.call(controller.filter(), req))

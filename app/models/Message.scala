@@ -10,8 +10,8 @@ import play.api.libs.json.{Json, OWrites, Reads}
  * @param message   wiadomość
  */
 case class Message(
-                    sender: Long,
-                    recipient: Long,
+                    sender: String,
+                    recipient: String,
                     message: String
                   )
 

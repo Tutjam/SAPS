@@ -15,7 +15,7 @@ class SubscriptionDAOImpl @Inject() extends SubscriptionDAO with Logger {
   val list: ListBuffer[Subscription] = ListBuffer[Subscription]()
 
   (0L until 10L).toList.map { subId =>
-    val subscription = new Subscription(subId, math.random() < 0.5)
+    val subscription = new Subscription(s"${subId}", math.random() < 0.5)
     logger.info(s"Subscription added to database : ${subscription}")
     list.addOne(subscription)
   }
@@ -30,7 +30,7 @@ class SubscriptionDAOImpl @Inject() extends SubscriptionDAO with Logger {
    * @param userId identyfikator użytkownika
    * @return subskrypcja lub None
    */
-  override def find(userId: Long): Option[Subscription] = list.find(_.getUserId == userId)
+  override def find(userId: String): Option[Subscription] = list.find(_.getUserId == userId)
 
   /**
    * Aktualizuje subskrypcję

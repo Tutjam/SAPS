@@ -12,25 +12,25 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 class SubscriberServiceSpec @Inject()() extends PlaySpec with GuiceOneAppPerSuite {
   val subscriptionDAO = mock[SubscriptionDAO]
-  val message = Message(1, 100, "START")
-  val wrongMessage = Message(1, 100, "XXX")
-  val wrongSenderIDMessage = Message(-1, 100, "START")
-  val wrongSubscriptionManagerIdMessage = Message(1, 99, "STOP")
-  val activeSubscription = new Subscription(1, true)
-  val inActiveSubscription = new Subscription(1, false)
+  val message = Message("1", "100", "START")
+  val wrongMessage = Message("1", "100", "XXX")
+  val wrongSenderIDMessage = Message("-1", "100", "START")
+  val wrongSubscriptionManagerIdMessage = Message("1", "99", "STOP")
+  val activeSubscription = new Subscription("1", true)
+  val inActiveSubscription = new Subscription("1", false)
 
   val subscriberService = new SubscriberServiceImpl(subscriptionDAO)
   "A SubscriberService #update" must {
     "updates subscription to active" in {
       when(subscriptionDAO.update(activeSubscription)).thenReturn(Some(activeSubscription))
-      when(subscriptionDAO.find(1)).thenReturn(Some(activeSubscription))
+      when(subscriptionDAO.find("1")).thenReturn(Some(activeSubscription))
 
       await(subscriberService.update(message)) mustBe Right(activeSubscription)
     }
 
     "updates subscription to inactive" in {
       when(subscriptionDAO.update(inActiveSubscription)).thenReturn(Some(inActiveSubscription))
-      when(subscriptionDAO.find(1)).thenReturn(Some(inActiveSubscription))
+      when(subscriptionDAO.find("1")).thenReturn(Some(inActiveSubscription))
 
       await(subscriberService.update(message)) mustBe Right(inActiveSubscription)
     }
@@ -44,7 +44,7 @@ class SubscriberServiceSpec @Inject()() extends PlaySpec with GuiceOneAppPerSuit
     }
 
     "returns error becouse there is no subscription with such sender ID" in {
-      when(subscriptionDAO.find(-1)).thenReturn(None)
+      when(subscriptionDAO.find("-1")).thenReturn(None)
       await(subscriberService.update(wrongSenderIDMessage)) mustBe Left("Sender with id '-1' not found in database.")
     }
   }

@@ -8,10 +8,10 @@ import play.api.libs.json.{JsValue, Json}
  * @param userId       identyfikator
  * @param isActive true jeżeli subskrybuje
  */
-class Subscription(userId: Long,
+class Subscription(userId: String,
                  var isActive: Boolean) {
   //getter
-  def getUserId: Long = userId
+  def getUserId: String = userId
 
   //setter
   def setActivity(isActive: Boolean): Subscription = {
