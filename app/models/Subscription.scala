@@ -1,6 +1,6 @@
 package models
 
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsValue, Json}
 
 /**
  * Model reprezentujący subskrybenta serwisu anty-phishingowego
@@ -28,8 +28,10 @@ class Subscription(userId: Long,
 }
 
 object Subscription {
-  def toJson(subscription: Subscription): JsObject = {
-    Json.obj("userId" -> subscription.getUserId,
-      "isActive" -> subscription.isActive)
+  def toJson(subscription: Subscription): JsValue = {
+    Json.parse(
+      s"""{ "userId": "${subscription.getUserId}",
+         | "isActive": "${subscription.isActive}"
+         | }""".stripMargin)
   }
 }

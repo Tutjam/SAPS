@@ -17,11 +17,17 @@ import scala.util.Try
  * Serwis filtrujący wiadomości
  */
 class WSServiceImpl @Inject()(
-                           ws: WSClient
-                         )
-                         (
-                           implicit val executionContext: ExecutionContext
-                         ) extends WSService with Logger {
+                               ws: WSClient
+                             )
+                             (
+                               implicit val executionContext: ExecutionContext
+                             ) extends WSService with Logger {
+  /**
+   * Sprawdza bezpieczeństwo przekazanego urla
+   *
+   * @param url url do sprawdzenia
+   * @return url, jeżeli bezpieczny
+   */
   def externalServiceRequest(url: String): Future[Option[String]] = {
     executeRequest(url).map {
       case Some(response) =>

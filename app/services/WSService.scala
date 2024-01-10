@@ -9,9 +9,10 @@ import scala.concurrent.Future
 trait WSService {
 
   /**
-   * Wykonuje request do zewnętrznego serwisu
-   * @param data dane do przesłania
-   * @return
+   * Sprawdza bezpieczeństwo przekazanego urla
+   *
+   * @param url url do sprawdzenia
+   * @return url, jeżeli bezpieczny
    */
-  def externalServiceRequest(data: String): Future[Option[String]]
+  def externalServiceRequest(url: String): Future[Option[String]]
 }

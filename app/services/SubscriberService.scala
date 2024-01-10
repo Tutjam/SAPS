@@ -12,7 +12,7 @@ trait SubscriberService {
    * Aktualizuje subskrypcją subskrybentów
    *
    * @param message wiadomość
-   * @return zwraca subskrybenta, jeżeli zaktualizowano stan jego subskrypcji
+   * @return zaktualizowana subskrypcja na prawo, błąd na lewo
    */
   def update(message: Message): Future[Either[String, Subscription]]
 
