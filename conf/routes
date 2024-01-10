@@ -4,6 +4,3 @@
 
 +nocsrf
 POST        /messages              controllers.SMSController.check
-
-+nocsrf
-POST        /subscriptions         controllers.SubscriptionController.update
