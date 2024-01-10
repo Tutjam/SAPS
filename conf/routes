@@ -3,4 +3,4 @@
 # ~~~~
 
 +nocsrf
-POST        /messages              controllers.SMSController.check
+POST        /messages              controllers.FilterController.filter

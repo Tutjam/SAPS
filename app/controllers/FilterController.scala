@@ -9,9 +9,9 @@ import utils.JsParser
 import javax.inject._
 import scala.concurrent.{ExecutionContext, Future}
 
-class SMSController @Inject()(cc: ControllerComponents,
-                              messageFilterService: FilterService,
-                              subscriberService: SubscriberService
+class FilterController @Inject()(cc: ControllerComponents,
+                                 filterService: FilterService,
+                                 subscriberService: SubscriberService
                              )(
                                implicit val executionContext: ExecutionContext
                              ) extends AbstractController(cc) {
@@ -19,14 +19,14 @@ class SMSController @Inject()(cc: ControllerComponents,
   /**
    * Sprawdza, czy wiadomość jest bezpieczna
    */
-  def check() = Action.async { request =>
+  def filter() = Action.async(parse.json) { request =>
     JsParser.parse[Message](request.body) match {
       case Some(msg) =>
         processTheMessage(msg)
 
       case None =>
         val errorObj = Json.obj(
-          "source" -> request.body.asJson,
+          "source" -> request.body,
           "title" -> "Invalid request body"
         )
 
@@ -37,21 +37,17 @@ class SMSController @Inject()(cc: ControllerComponents,
 
   private def processTheMessage(msg: Message) = {
     subscriberService.update(msg).flatMap {
-      case Right(subscriber) =>
-        Future.successful(Ok(Json.obj("data" -> Subscription.toJson(subscriber))))
+      case Right(subscription) =>
+        Future.successful(Ok(Json.obj("subscription" -> Subscription.toJson(subscription))))
 
       case Left(error) =>
-        filter(msg)
-    }
-  }
+        filterService.filter(msg).map {
+          case Some(safeMsg) =>
+            Ok(Json.obj("message" -> Json.toJson(safeMsg)))
 
-  private def filter(msg: Message) = {
-    messageFilterService.filter(msg).map {
-      case Some(safeMsg) =>
-        Ok(Json.obj("data" -> Json.toJson(safeMsg)))
-
-      case None =>
-        NoContent
+          case None =>
+            NoContent
+        }
     }
   }
 }
