@@ -2,7 +2,7 @@ import com.google.inject.AbstractModule
 import dao.{SubscriptionDAO, SubscriptionDAOImpl}
 
 import java.time.Clock
-import services.{ApplicationTimer, AtomicCounter, Counter}
+import services.{ApplicationTimer, AtomicCounter, Counter, MessageFilterService, MessageFilterServiceImpl, SubscriberService, SubscriberServiceImpl, WSService, WSServiceImpl}
 
 /**
  * This class is a Guice module that tells Guice how to bind several
@@ -26,6 +26,9 @@ class Module extends AbstractModule {
     bind(classOf[Counter]).to(classOf[AtomicCounter])
 
     bind(classOf[SubscriptionDAO]).to(classOf[SubscriptionDAOImpl])
+    bind(classOf[SubscriberService]).to(classOf[SubscriberServiceImpl])
+    bind(classOf[MessageFilterService]).to(classOf[MessageFilterServiceImpl])
+    bind(classOf[WSService]).to(classOf[WSServiceImpl])
   }
 
 }

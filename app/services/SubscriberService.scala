@@ -1,21 +1,12 @@
 package services
 
-import dao.SubscriptionDAO
 import models.{Message, Subscription}
-import utils.Logger
-
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 /**
  * Serwis filtrujący wiadomości
  */
-class SubscriberService @Inject()(
-                                 subscriptionDAO: SubscriptionDAO
-                                 )
-                                 (
-                                   implicit val executionContext: ExecutionContext
-                                 ) extends Logger {
+trait SubscriberService {
 
   /**
    * Aktualizuje subskrypcją subskrybentów
@@ -23,36 +14,15 @@ class SubscriberService @Inject()(
    * @param message wiadomość
    * @return zwraca subskrybenta, jeżeli zaktualizowano stan jego subskrypcji
    */
-  def update(message: Message): Future[Either[String, Subscription]] = Future {
-    val subscription = subscriptionDAO.find(message.recipient)
-    (message.message match {
-      case "START" =>
-        setActivity(isActive = true, subscription, message)
+  def update(message: Message): Future[Either[String, Subscription]]
 
-      case "STOP" =>
-        setActivity(isActive = false, subscription, message)
-
-      case _ =>
-        Left("Text of the message should be equal to 'START' or 'STOP'.")
-    }) match {
-      case Right(r) =>
-        logger.info(s"Subscription of recipient with id '${message.recipient}' set to ${r.isActive.toString.toUpperCase}")
-        Right(r)
-
-      case Left(error) =>
-        logger.info(error)
-        Left(error)
-
-    }
-  }
-
-  def setActivity(isActive: Boolean, subscription: Option[Subscription], message: Message) = {
-    subscription match {
-      case Some(r) =>
-        subscriptionDAO.update(r.setActivity(isActive)).toRight("")
-
-      case None =>
-        Left(s"Recipient with id '${message.recipient}' not found in database.")
-    }
-  }
+  /**
+   * Aktualizuje flagę posiadania subskrypcji
+   *
+   * @param isActive     czy jest aktywna
+   * @param subscription subskrypcja
+   * @param message      wiadomość
+   * @return na lewo błąd, na prawo zaktualizowana subskrypcja
+   */
+  def updateActivity(isActive: Boolean, subscription: Option[Subscription], message: Message): Either[String, Subscription]
 }
