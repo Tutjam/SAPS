@@ -1,7 +1,7 @@
 package dao
 
 import models.Subscription
-import utils.Logger
+import utils.{Logger, SubscriptionManager}
 
 import javax.inject.{Inject, Singleton}
 import scala.collection.mutable.ListBuffer
@@ -19,6 +19,10 @@ class SubscriptionDAOImpl @Inject() extends SubscriptionDAO with Logger {
     logger.info(s"Subscription added to database : ${subscription}")
     list.addOne(subscription)
   }
+
+  val managerSubscription = new Subscription(SubscriptionManager.ID, true)
+  list.addOne(managerSubscription)
+  logger.info(s"Subscription added to database : ${managerSubscription}")
 
   /**
    * Wyszukuje subskrypcji użytkownika

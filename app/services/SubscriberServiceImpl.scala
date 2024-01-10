@@ -2,7 +2,7 @@ package services
 
 import dao.SubscriptionDAO
 import models.{Message, Subscription}
-import utils.Logger
+import utils.{Logger, SubscriptionManager}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -24,22 +24,27 @@ class SubscriberServiceImpl @Inject()(
    * @return zwraca subskrybenta, jeżeli zaktualizowano stan jego subskrypcji
    */
   def update(message: Message): Future[Either[String, Subscription]] = Future {
-    val text = message.message
-    val subscription = subscriptionDAO.find(message.recipient)
-    val active = text == "START"
-    (text match {
-      case "START" | "STOP" =>
-        updateActivity(isActive = active, subscription, message)
-      case _ =>
-        Left("Text of the message should be equal to 'START' or 'STOP'.")
-    }) match {
-      case Right(r) =>
-        logger.info(s"Subscription of recipient with id '${message.recipient}' set to ${r.isActive.toString.toUpperCase}")
-        Right(r)
+    if(message.recipient == SubscriptionManager.ID) {
+      val text = message.message
+      val subscription = subscriptionDAO.find(message.sender)
+      val active = text == "START"
+      (text match {
+        case "START" | "STOP" =>
+          updateActivity(isActive = active, subscription, message)
+        case _ =>
+          Left("Text of the message should be equal to 'START' or 'STOP'.")
+      }) match {
+        case Right(r) =>
+          logger.info(s"Subscription of sender with id '${message.sender}' set to ${r.isActive.toString.toUpperCase}")
+          Right(r)
 
-      case Left(error) =>
-        logger.info(error)
-        Left(error)
+        case Left(error) =>
+          logger.info(error)
+          Left(error)
+      }
+    } else {
+      logger.info("Recipient is not a SubscriptionManager.")
+      Left("Recipient is not a SubscriptionManager.")
     }
   }
 
@@ -52,6 +57,6 @@ class SubscriberServiceImpl @Inject()(
    * @return na lewo błąd, na prawo zaktualizowana subskrypcja
    */
   def updateActivity(isActive: Boolean, subscription: Option[Subscription], message: Message): Either[String, Subscription] = {
-    subscription.flatMap(s => subscriptionDAO.update(s.setActivity(isActive))).toRight(s"Recipient with id '${message.recipient}' not found in database.")
+    subscription.flatMap(s => subscriptionDAO.update(s.setActivity(isActive))).toRight(s"Sender with id '${message.sender}' not found in database.")
   }
 }
