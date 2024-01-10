@@ -1,6 +1,6 @@
 package utils
 
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{JsValue, Json, Reads}
 import play.api.mvc.AnyContent
 
 object JsParser {
@@ -12,5 +12,9 @@ object JsParser {
       case None =>
         None
     }
+  }
+
+  def parse[T](jsValue: JsValue)(implicit reads: Reads[T]): Option[T] = {
+    Json.fromJson[T](jsValue).asOpt
   }
 }
